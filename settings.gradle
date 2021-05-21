@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "storage_access_framework_demo"
