@@ -35,6 +35,30 @@
                 app:layout_constraintTop_toBottomOf="@id/imageViewProfile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:text="Record audio n Play"
+                android:id="@+id/buttonRecordAudio"
+                android:layout_marginTop="20dp"
+                />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/buttonRecordAudio"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Storage AccessFramework Demo"
+                android:id="@+id/buttonSAF"
+                android:layout_marginTop="20dp"
+                />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/buttonSAF"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:text="Open Camera without image Scale"
                 android:id="@+id/buttonCamera"
                 android:layout_marginTop="20dp"

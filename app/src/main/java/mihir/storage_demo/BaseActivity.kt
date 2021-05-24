@@ -82,6 +82,16 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun bindViewWithViewBinding(view: View)
 
+
+    fun getImageDirectoryPath(): String{
+        return Environment.DIRECTORY_PICTURES + File.separator + "MihirDemo"
+    }
+
+    fun getAudioDirectoryPath(): String{
+        return Environment.DIRECTORY_MUSIC + File.separator + "MihirDemo" + File.separator
+    }
+
+
     fun getNewFileName() : String {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
        return "JPEG_${timeStamp}_.jpg"
@@ -109,10 +119,15 @@ abstract class BaseActivity : AppCompatActivity() {
         alert.show()
     }
 
+     fun checkSinglePermission(permission: String) {
+        requestSinglePermission.launch(permission)
+    }
+
     fun checkPermissions() {
         requestMultiplePermissions.launch(
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO,
             )
         )
 
@@ -140,6 +155,23 @@ abstract class BaseActivity : AppCompatActivity() {
             else onPermissionGrantedListener.OnPermissionGranted()
 
         }
+
+
+    val requestSinglePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            var isDenied = 2
+            if(isGranted){
+
+            }else{
+                isDenied = 1
+            }
+
+            //ShowPrompt(context,permissions);
+            if (isDenied == 1) onPermissionDeniedListener.OnPermissionDenied()
+            else if (isDenied == 0) onPermissionPermanentlyDeniedListener.OnPermissionPermanentlyDenied()
+            else onPermissionGrantedListener.OnPermissionGranted()
+
+        }
+
 
 
     fun showSettings() {
@@ -171,7 +203,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = getAppSpecificAlbumStorageDir(this, "MihirDemo")
+        val storageDir: File? = getAppSpecificAlbumStorageDir(this, Environment.DIRECTORY_PICTURES,"MihirDemo")
         return File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
@@ -182,13 +214,13 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun getAppSpecificAlbumStorageDir(context: Context, albumName: String): File? {
+    fun getAppSpecificAlbumStorageDir(context: Context, albumName: String,subAlbumName: String): File? {
         // Get the pictures directory that's inside the app-specific directory on
         // external storage.
         val file = File(
             context.getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES
-            ), albumName
+                albumName
+            ), subAlbumName
         )
         if (!file?.mkdirs()) {
             Log.e("fssfsf", "Directory not created")
@@ -348,11 +380,11 @@ abstract class BaseActivity : AppCompatActivity() {
             put(MediaStore.Images.Media.MIME_TYPE, mimeType)
             put(
                 MediaStore.Images.Media.RELATIVE_PATH,
-                Environment.DIRECTORY_PICTURES + File.separator + "MihirDemo"
+                getImageDirectoryPath()
             )
         }
         val imageUri =
-            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            contentResolver.insert(MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL), values)
         var fos: FileOutputStream =
             contentResolver.openOutputStream(Objects.requireNonNull(imageUri)!!) as FileOutputStream
 
